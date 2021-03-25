@@ -11,8 +11,10 @@
   function get_expocode_mappings() {
     let url = "https://cchdo.ucsd.edu/api/v1/cruise";
     //let mappings = api_get(url);
-    let a = fetch(url, {mode: "no-cors"});
-    console.log(a);
+    fetch(url, {mode: "no-cors"})
+    .then(response => {
+     console.log(response.json())
+    });
     //return mappings
   }
   
