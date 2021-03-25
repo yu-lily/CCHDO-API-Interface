@@ -16,7 +16,7 @@
   }
   
   async function api_get(url) {
-    let response = await fetch(url);
+    let response = await fetch(url, {mode: "no-cors"});
     let data = await response.json();
     return data;
   }
