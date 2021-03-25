@@ -3,3 +3,28 @@
 
 <label for="expocode_input">Expocode:</label>
 <input id="expocode_input"></input>
+
+<button onclick="get_expocode_mappings()">Get Cruise Info</button>
+
+
+<script>
+  function get_expocode_mappings() {
+    let url = "https://cchdo.ucsd.edu/api/v1/cruise";
+    let mappings = api_get(url);
+    console.log(mappings);
+    return mappings
+  }
+  
+  async function api_get(url) {
+    let response = await fetch(url);
+    let data = await response.json();
+    return data;
+  }
+</script>
+
+<br>
+<label for="ship_json">Raw JSON:</label>
+<br>
+<textarea id="ship_json" name="ship_json" rows="10" cols="100">
+  Ship info goes here.
+</textarea>
