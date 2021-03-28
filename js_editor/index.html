@@ -1,0 +1,37 @@
+<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+<h1>JSON Editor</h1>
+<div id='editor_holder'></div>
+<button id='display_json'>Show JSON</button>
+<br> <br>
+<textarea id="ship_json" name="ship_json" rows="10" cols="100">
+Cruise info goes here.
+</textarea>
+
+
+
+<script>
+  // Initialize the editor with a JSON schema
+  var editor = new JSONEditor(document.getElementById('editor_holder'),{
+	schema: {
+	  type: "object",
+	  title: "Cruise",
+	  properties: {
+		expocode: {
+		  type: "string"
+		},
+		ship: {
+		  type: "string"
+		},
+		startDate: {
+		  type: "string"
+		},
+	  }
+	}
+  });
+
+  // Hook up the submit button to log to the console
+  document.getElementById('display_json').addEventListener('click',function() {
+	document.getElementById('ship_json').value = JSON.stringify(editor.getValue());
+
+  });
+</script>
