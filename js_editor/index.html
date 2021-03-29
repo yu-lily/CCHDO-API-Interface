@@ -1,12 +1,80 @@
+<head>
+
+<!--JSON Editor -->
 <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+
+<!--Convert json to json schema -->
+<script src="./bundle.js"></script>
+
+</head>
+
+<body>
+
+<h1>Get Cruise Info</h1>
+
+<label for="API_key_input">API Key:</label>
+<input id="API_key_input"></input>
+
+<br>
+
+<label for="expocode_input">Expocode:</label>
+<input id="expocode_input", value = '58JH19950427'></input>
+
+<br>
+
+<button onclick="btn_press()">Get Cruise Info</button>
+
+
+<script>
+  const cors_proxy = "https://jsonp.afeld.me/?url="
+  var cruise_json = "None"
+  
+  function get_expocode_mappings() {
+	//Need to use a proxy because of CORS errors. Don't send inline auth over this.
+    let url = cors_proxy + "https://cchdo.ucsd.edu/api/v1/cruise";
+    let mappings = api_get(url);
+    return mappings
+  }
+  
+  async function api_get(url) {
+    let response = await fetch(url);
+    let data = await response.json();
+    return data;
+  }
+  var expocode_mappings = "None";
+  get_expocode_mappings().then(response => {expocode_mappings = response});
+  
+  function get_id() {
+	let to_find = document.getElementById('expocode_input').value;
+	for (pair of expocode_mappings['cruises']) {
+		if (pair['expocode'].toLowerCase() === to_find.toLowerCase()) {
+			return pair['id'];
+		}
+	}
+  }
+  
+  function btn_press() {
+	let id = get_id();
+	let url = cors_proxy + "https://cchdo.ucsd.edu/api/v1/cruise/" + id;
+	
+	api_get(url)
+		.then(response => {
+		cruise_json = JSON.stringify(response);
+		document.getElementById('ship_json').value = cruise_json;
+		});
+  }
+</script>
+
+<hr>
+
 <h1>JSON Editor</h1>
+<button id='update_editor_btn', onclick = 'update_editor()'>Update Editor</button>
 <div id='editor_holder'></div>
 <button id='display_json'>Show JSON</button>
 <br> <br>
 <textarea id="ship_json" name="ship_json" rows="10" cols="100">
 Cruise info goes here.
 </textarea>
-
 
 
 <script>
@@ -34,4 +102,11 @@ Cruise info goes here.
 	document.getElementById('ship_json').value = JSON.stringify(editor.getValue());
 
   });
+  
+  function update_editor() {
+	editor.destroy();
+	editor = new JSONEditor(document.getElementById('editor_holder'), {schema: ejs(JSON.parse(cruise_json))})
+	editor.setValue(JSON.parse(cruise_json));
+  }
 </script>
+</body>
